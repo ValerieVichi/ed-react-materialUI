@@ -7,6 +7,7 @@ import { useState } from "react";
 
 export default function TodoForm({ addTodo }) {
   const [text, setText] = useState("");
+
   const changeHandler = (e) => {
     setText(e.target.value);
   };
@@ -32,7 +33,6 @@ export default function TodoForm({ addTodo }) {
                   edge="end"
                   onClick={submitHandler}
                 >
-                  {/* {showPassword ? <VisibilityOff /> : <Visibility />} */}
                   <Create />
                 </IconButton>
               </InputAdornment>

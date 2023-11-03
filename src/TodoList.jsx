@@ -1,19 +1,23 @@
 // import * as React from "react";
 import List from "@mui/material/List";
+import { Box } from "@mui/material";
+import { Typography } from "@mui/material";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TodoItem from "./TodoItem";
 import TodoForm from "./TodoForm";
 
-const initialTodos = [
-  { id: 1, text: "Walked the dog", completed: false },
-  { id: 2, text: "Walked the cat", completed: false },
-  { id: 3, text: "Walked the fish", completed: true },
-  { id: 4, text: "Walked the chicken", completed: false },
-];
+const getInitialData = () => {
+  const initialData = JSON.parse(localStorage.getItem("todos"));
+  if (initialData === null) return [];
+  return initialData;
+};
 
 export default function TodoList() {
-  const [todos, setTodos] = useState(initialTodos);
+  const [todos, setTodos] = useState(getInitialData);
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }, [todos]);
 
   const toggleTodo = (id) => {
     setTodos((prevTodos) => {
@@ -32,21 +36,36 @@ export default function TodoList() {
 
   const addTodo = (text) => {
     setTodos((prevTodos) => {
-      return [...prevTodos, { id: 8, text: text, completed: false }];
+      return [
+        ...prevTodos,
+        { id: crypto.randomUUID(), text: text, completed: false },
+      ];
     });
   };
 
   return (
-    <List sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
-      {todos.map((todo) => (
-        <TodoItem
-          todo={todo}
-          key={todo.id}
-          remove={removeTodo}
-          toggle={toggleTodo}
-        />
-      ))}
-      <TodoForm addTodo={addTodo} />
-    </List>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        m: 3,
+      }}
+    >
+      <Typography variant="h2" component="h1">
+        Todos
+      </Typography>
+      <List sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
+        {todos.map((todo) => (
+          <TodoItem
+            todo={todo}
+            key={todo.id}
+            remove={removeTodo}
+            toggle={toggleTodo}
+          />
+        ))}
+        <TodoForm addTodo={addTodo} />
+      </List>
+    </Box>
   );
 }
